@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FortniteTracker</string><string-array name="platform">
+    <item>pc</item>
+    <item>psn</item>
+    <item>xbl</item>
+</string-array>
+
+</resources>
