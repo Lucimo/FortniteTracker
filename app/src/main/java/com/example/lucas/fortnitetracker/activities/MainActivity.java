@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 data.clear();
                 fortniteTrackerViewModel.getData(sp_platform.getSelectedItem().toString().trim(), etUserForSearch.getText().toString());
-                etUserForSearch.setText("");
             }
         });
 
