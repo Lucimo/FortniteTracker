@@ -22,60 +22,48 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText etNickName;
-    private Spinner spinnerPlataform;
-    private FortniteTrackerAdapter adapter;
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private FloatingActionButton btnFind;
-    private FortniteTrackerViewModel fortniteViewModel;
-    private String platform;
-    private String epicName;
+    private ArrayList<Data> data;
+    private FloatingActionButton btnSearch;
+    private EditText etUserForSearch;
+    private Spinner sp_platform;
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_main);
+        setContentView(R.layout.activity_main);
+        recyclerView = findViewById(R.id.recyclerView_main);
+        data = new ArrayList<>();
+        etUserForSearch = findViewById(R.id.editText_search);
+        btnSearch = findViewById(R.id.btn_search);
+        sp_platform = findViewById(R.id.spinner_platform);
 
-        etNickName = findViewById(R.id.editText_search);
-        spinnerPlataform = findViewById(R.id.spinner_platform);
-        btnFind = findViewById(R.id.btn_search);
 
-        changeData("","");
+        FortniteTrackerViewModel fortniteTrackerViewModel = ViewModelProviders.of(this).get(FortniteTrackerViewModel.class);
+        fortniteTrackerViewModel.getDataMutableLiveData().observe(this, arr_params -> {
+            if (arr_params != null) {
 
-        clickbtnFind();
-    }
+                data = arr_params;
+                recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
+                recyclerView.setAdapter(new FortniteTrackerAdapter(data));
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void changeData(String platform, String epicName){
-        fortniteViewModel = ViewModelProviders.of(this).get(FortniteTrackerViewModel.class);
-        fortniteViewModel.getDataMutableLiveData().observe(this, Data -> {
-            if(Data!=null){
-                Log.d("ServiceFornite","Changes: "+ Data);
-                generateForniteList(Data);
+            }
+
+
+        });
+        fortniteTrackerViewModel.getData("psn", "ninja");
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                data.clear();
+                fortniteTrackerViewModel.getData(sp_platform.getSelectedItem().toString().trim(), etUserForSearch.getText().toString());
+                etUserForSearch.setText("");
             }
         });
-        fortniteViewModel.getData(platform, epicName);
-    }
 
-    private void generateForniteList(ArrayList<Data> data) {
-        recyclerView = findViewById(R.id.recyclerView_main);
-        adapter = new FortniteTrackerAdapter(data);
-        layoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void clickbtnFind(){
-        btnFind.setOnClickListener(v -> {
-            platform = spinnerPlataform.getSelectedItem().toString();
-            epicName = etNickName.getText().toString();
-            Log.d("Change","platform "+platform+" epic_name "+epicName);
-            fortniteViewModel.getData(platform, epicName);
-        });
 
     }
 }
-
