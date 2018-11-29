@@ -31,8 +31,8 @@ public class FNAdapter extends RecyclerView.Adapter<FNViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FNViewHolder fnViewHolder, int position) {
-        Data item = data.get(position);
+    public void onBindViewHolder(@NonNull FNViewHolder fnViewHolder, int i) {
+        Data item = data.get(i);
 
         fnViewHolder.tv_first.setText(item.getLabel());
         fnViewHolder.tv_third.setText(item.getRank());
